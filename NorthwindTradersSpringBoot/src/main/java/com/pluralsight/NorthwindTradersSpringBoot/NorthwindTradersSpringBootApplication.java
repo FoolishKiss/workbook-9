@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class NorthwindTradersSpringBootApplication {
 
-	public static void main(String[] args) {SpringApplication.run(NorthwindTradersSpringBootApplication.class, args);
+	public static void main(String[] args) {;
 
 		//make sure the username and password were provided for the db
 		if (args.length != 2) {

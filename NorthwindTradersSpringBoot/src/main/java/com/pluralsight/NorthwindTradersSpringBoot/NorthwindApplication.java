@@ -5,10 +5,12 @@ import com.pluralsight.NorthwindTradersSpringBoot.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Scanner;
 
+@Component
 public class NorthwindApplication implements CommandLineRunner {
 
     //create an instance of our filmDao
@@ -63,16 +65,20 @@ public class NorthwindApplication implements CommandLineRunner {
                     System.out.print("Enter product price: ");
                     double price = Double.parseDouble(scanner.nextLine());
 
+                    System.out.println("Enter category ID: ");
+                    int categoryId = Integer.parseInt(scanner.nextLine());
+
                     // Create a new Product object and set its data.
                     Product newProduct = new Product();
                     newProduct.setName(name);
                     newProduct.setPrice(price);
+                    newProduct.setCategoryId(categoryId);
 
                     // Add the new film to the DAO (which stores it in memory).
                     productDao.add(newProduct);
 
                     // Let the user know that the film was added.
-                    System.out.println("Film added successfully.");
+                    System.out.println("Product added successfully.");
 
                     break;
 

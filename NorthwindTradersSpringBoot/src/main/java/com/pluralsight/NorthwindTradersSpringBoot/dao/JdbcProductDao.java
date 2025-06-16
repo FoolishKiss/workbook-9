@@ -24,22 +24,19 @@ public class JdbcProductDao implements ProductDao {
 
         // This is the SQL INSERT statement we will run.
         // We are inserting the film title, rental rate, and language_id.
-        String sql = "INSERT INTO product (ProductID, Name, CategoryID, UnitPrice) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO products ( ProductName, CategoryID, UnitPrice) VALUES (?, ?, ?)";
 
         // This is a "try-with-resources" block.
         // It ensures that the Connection and PreparedStatement are closed automatically after we are done.
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Set the first parameter (?) to the film's title.
-            stmt.setInt(1, product.getProductId());
-
             // Set the second parameter (?) to the film's rental rate.
-            stmt.setString(2, product.getName());
+            stmt.setString(1, product.getName());
 
-            stmt.setString(3, product.getCategory());
+            stmt.setInt(2, product.getCategoryId());
 
-            stmt.setDouble(4, product.getPrice());
+            stmt.setDouble(3, product.getPrice());
 
 
             // Execute the INSERT statement — this will add the row to the database.
@@ -58,7 +55,7 @@ public class JdbcProductDao implements ProductDao {
         List<Product> products = new ArrayList<>();
 
         // This is the SQL SELECT statement we will run.
-        String sql = "SELECT ProductID, Name, CategoryID, UnitPrice FROM products";
+        String sql = "SELECT ProductID, ProductName, CategoryID, UnitPrice FROM products";
 
         // This is a "try-with-resources" block.
         // It ensures that the Connection, Statement, and ResultSet are closed automatically after we are done.
@@ -75,10 +72,10 @@ public class JdbcProductDao implements ProductDao {
                 product.setProductId(rs.getInt("ProductID"));
 
                 // Set the film's title from the "title" column.
-                product.setName(rs.getString("Name"));
+                product.setName(rs.getString("ProductName"));
 
                 // Set the film's rental rate from the "rental_rate" column.
-                product.setCategory(rs.getString("CategoryID"));
+                product.setCategoryId(rs.getInt("CategoryID"));
 
                 product.setPrice(rs.getDouble("UnitPrice"));
 
