@@ -13,7 +13,7 @@ import java.util.Scanner;
 @Component
 public class NorthwindApplication implements CommandLineRunner {
 
-    //create an instance of our filmDao
+    //create an instance of our productDao
     @Autowired
     @Qualifier("jdbcProductDao")
     private ProductDao productDao;
@@ -31,7 +31,10 @@ public class NorthwindApplication implements CommandLineRunner {
             System.out.println("\n=== Product Admin Menu ===");
             System.out.println("1. List Products");
             System.out.println("2. Add Product");
-            System.out.println("3. Exit");
+            System.out.println("3. Delete Product");
+            System.out.println("4. Update Product");
+            System.out.println("5. Search Product");
+            System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
 
             // Read the user's choice as a String.
@@ -41,52 +44,32 @@ public class NorthwindApplication implements CommandLineRunner {
             switch (choice) {
 
                 case "1":
-                    // The user chose option 1 → List all films.
-
-                    // Call the DAO to get a list of all films.
-                    List<Product> products = productDao.getAll();
-
-                    // Print the films to the screen.
-                    System.out.println("\nProducts:");
-                    for (Product film : products) {
-                        System.out.println(film);
-                    }
-
+                    // The user chose option 1 → List all products.
+                    listProducts();
                     break;
 
                 case "2":
-                    // The user chose option 2 → Add a new film.
-
-                    // Ask the user for the film's title.
-                    System.out.print("Enter product name: ");
-                    String name = scanner.nextLine();
-
-                    // Ask the user for the film's rental rate.
-                    System.out.print("Enter product price: ");
-                    double price = Double.parseDouble(scanner.nextLine());
-
-                    System.out.println("Enter category ID: ");
-                    int categoryId = Integer.parseInt(scanner.nextLine());
-
-                    // Create a new Product object and set its data.
-                    Product newProduct = new Product();
-                    newProduct.setName(name);
-                    newProduct.setPrice(price);
-                    newProduct.setCategoryId(categoryId);
-
-                    // Add the new film to the DAO (which stores it in memory).
-                    productDao.add(newProduct);
-
-                    // Let the user know that the film was added.
-                    System.out.println("Product added successfully.");
-
+                    // The user chose option 2 → Add a new product.
+                    addProduct(scanner);
                     break;
 
                 case "3":
+                    // The user chose option 3 → delete a product.
+                    deleteProduct(scanner);
+
+                case "4":
+                    // The user chose option 4 → update a product.
+                    updateProduct(scanner);
+
+                case "5":
+                    // The user chose option 5 → search a product.
+                    searchByKeyword(scanner);
+
+                case "6":
                     // The user chose option 3 → Exit the program.
 
                     // Print a goodbye message.
-                    System.out.println("Goodbye!");
+                    System.out.println("\nGoodbye!");
 
                     // End the program with a success status (0).
                     System.exit(0);
@@ -95,9 +78,74 @@ public class NorthwindApplication implements CommandLineRunner {
                     // The user entered something that is not a valid option.
 
                     // Tell the user the input was invalid and show the menu again.
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("\nInvalid choice. Please try again.");
                     break;
             }
+        }
+    }
+
+    private void listProducts() {
+        List<Product> products = productDao.getAll();
+        // Print the product's to the screen.
+       products.forEach(System.out::println);
+
+    }
+
+    private void addProduct(Scanner scanner) {
+        // Ask the user for the product's title.
+        System.out.print("\nEnter product name: ");
+        String name = scanner.nextLine();
+
+        // Ask the user for the product's rental rate.
+        System.out.print("\nEnter product price: ");
+        double price = Double.parseDouble(scanner.nextLine());
+
+        System.out.println("\nEnter category ID: ");
+        int categoryId = Integer.parseInt(scanner.nextLine());
+
+        // Create a new Product object and set its data.
+        Product newProduct = new Product();
+        newProduct.setName(name);
+        newProduct.setPrice(price);
+        newProduct.setCategoryId(categoryId);
+
+        // Add the new film to the DAO (which stores it in memory).
+        productDao.add(newProduct);
+
+        // Let the user know that the product was added.
+        System.out.println("\nProduct added successfully.");
+    }
+
+    private void deleteProduct(Scanner scanner) {
+        System.out.println("\nEnter product Id to delete: ");
+        int productId = Integer.parseInt(scanner.nextLine());
+        productDao.delete(productId);
+        System.out.println("\nProduct deleted successfully.");
+    }
+
+    private void updateProduct(Scanner scanner) {
+        System.out.println("\nEnter product ID to update: ");
+        int productId = Integer.parseInt(scanner.nextLine());
+        System.out.println("\nEnter new product name: ");
+        String name = scanner.nextLine();
+        System.out.println("\nEnter new category ID: ");
+        double price = Double.parseDouble(scanner.nextLine());
+        System.out.println("\nEnter new product price: ");
+        int categoryId = Integer.parseInt(scanner.nextLine());
+
+        Product product = new Product(productId, name, categoryId, price);
+        productDao.update(product);
+        System.out.println("\nProduct updated successfully.");
+    }
+
+    private void searchByKeyword(Scanner scanner) {
+        System.out.println("\nEnter search keyword: ");
+        String keyword = scanner.nextLine();
+        List<Product> results = productDao.searchByKeyword(keyword);
+        if (results.isEmpty()) {
+            System.out.println("\nNo products found.");
+        } else {
+            results.forEach(System.out::println);
         }
     }
 

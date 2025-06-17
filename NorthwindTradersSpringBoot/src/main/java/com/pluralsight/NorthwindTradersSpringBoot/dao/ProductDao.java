@@ -10,4 +10,10 @@ public interface ProductDao {
 
     List<Product> getAll();
 
+    void delete(int productId);
+
+    void update(Product product);
+
+    List<Product> searchByKeyword(String keyword);
+
 }
