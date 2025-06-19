@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.io.PipedReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,48 @@ public class JdbcCategoryDao implements CategoryDao {
             e.printStackTrace();
         }
 
+
+    }
+
+    @Override
+    public void update(Category category) {
+
+        String query = """
+                UPDATE categories
+                SET CategoryName = ?
+                WHERE CategoryID = ?
+                """;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, category.getName());
+            statement.setInt(2, category.getCategoryId());
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void delete(int categoryId) {
+
+        String query = """
+                DELETE FROM categories
+                WHERE CategoryID = ?
+                """;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, categoryId);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 

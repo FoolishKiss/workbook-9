@@ -28,4 +28,15 @@ public class CategoryController {
         categoryDao.add(category);
     }
 
+    @PutMapping("/{id}")
+    public void updateCategory(@PathVariable int id, @RequestBody Category category) {
+        category.setCategoryId(id);
+        categoryDao.update(category);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCategory(@PathVariable int id) {
+        categoryDao.delete(id);
+    }
+
 }
