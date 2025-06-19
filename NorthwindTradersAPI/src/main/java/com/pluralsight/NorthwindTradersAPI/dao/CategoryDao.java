@@ -8,4 +8,7 @@ public interface CategoryDao {
 
     List<Category> getAll();
 
+    void add(Category category);
+
+
 }
