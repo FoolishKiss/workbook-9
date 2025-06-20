@@ -63,8 +63,8 @@ public class JdbcProductDao implements ProductDao{
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, product.getProductName());
-            statement.setInt(1, product.getCategoryId());
-            statement.setDouble(1, product.getUnitPrice());
+            statement.setInt(2, product.getCategoryId());
+            statement.setDouble(3, product.getUnitPrice());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -115,6 +115,41 @@ public class JdbcProductDao implements ProductDao{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public List<Product> getByCategory(int categoryId) {
+
+
+        List<Product> products = new ArrayList<>();
+
+        String query = """
+                SELECT ProductID, ProductName, CategoryID, UnitPrice
+                FROM products
+                WHERE CategoryID = ?
+                """;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, categoryId);
+
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) {
+                    Product product = new Product();
+                    product.setProductId(results.getInt("ProductID"));
+                    product.setProductName(results.getString("ProductName"));
+                    product.setCategoryId(results.getInt("CategoryID"));
+                    product.setUnitPrice(results.getDouble("UnitPrice"));
+
+                    products.add(product);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
 
     }
 

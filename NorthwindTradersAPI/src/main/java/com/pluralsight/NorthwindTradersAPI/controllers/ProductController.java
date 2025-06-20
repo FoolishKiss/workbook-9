@@ -21,7 +21,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<Product> searchProducts(@RequestParam(required = false) Integer categoryId) {
+
+        if (categoryId != null) {
+            return productDao.getByCategory(categoryId);
+        }
+
         return productDao.getAll();
     }
 
